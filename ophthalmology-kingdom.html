@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ophthalmology Kingdom</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&family=Cinzel:wght@400;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+  :root {
+    --gold: #c9a227;
+    --dark-gold: #8b6914;
+    --parchment: #f4e4c1;
+    --dark-parchment: #e8d4a0;
+    --brown: #5c3d1e;
+    --dark-brown: #3a2010;
+    --stone: #7a7a7a;
+    --fog: #c8d4dc;
+    --glow-blue: #4fc3f7;
+    --glow-gold: #ffd54f;
+    --bg-dark: #1a1a2e;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Crimson Text', serif;
+    background: var(--bg-dark);
+    color: var(--parchment);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Sky / stars background ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, #16213e 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 20%, #0f3460 0%, transparent 50%),
+      #1a1a2e;
+    z-index: -2;
+  }
+
+  /* Stars */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.8) 0%, transparent 100%),
+      radial-gradient(1px 1px at 30% 5%,  rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 20%, rgba(255,255,255,0.9) 0%, transparent 100%),
+      radial-gradient(1px 1px at 75% 8%,  rgba(255,255,255,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 18%, rgba(255,255,255,0.8) 0%, transparent 100%),
+      radial-gradient(1px 1px at 45% 3%,  rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 65% 12%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 28%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 15% 35%, rgba(255,255,255,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 40% 30%, rgba(255,255,255,0.5) 0%, transparent 100%);
+    z-index: -1;
+    animation: twinkle 4s ease-in-out infinite alternate;
+  }
+
+  @keyframes twinkle {
+    from { opacity: 0.7; }
+    to   { opacity: 1; }
+  }
+
+  /* ── Header ── */
+  header {
+    text-align: center;
+    padding: 2rem 1rem 1rem;
+    background: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, transparent 100%);
+    position: relative;
+  }
+
+  header h1 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.8rem, 5vw, 3.5rem);
+    color: var(--gold);
+    text-shadow: 0 0 20px rgba(201,162,39,0.6), 0 2px 4px rgba(0,0,0,0.8);
+    letter-spacing: 0.05em;
+  }
+
+  header .subtitle {
+    font-family: 'Crimson Text', serif;
+    font-style: italic;
+    color: var(--dark-parchment);
+    font-size: 1.1rem;
+    margin-top: 0.3rem;
+    opacity: 0.9;
+  }
+
+  .header-controls {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+
+  .btn {
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    padding: 0.5rem 1.2rem;
+    border: 2px solid var(--gold);
+    background: rgba(201,162,39,0.15);
+    color: var(--gold);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+  }
+  .btn:hover {
+    background: rgba(201,162,39,0.3);
+    box-shadow: 0 0 10px rgba(201,162,39,0.4);
+  }
+  .btn.active {
+    background: var(--gold);
+    color: var(--dark-brown);
+  }
+  .btn-danger {
+    border-color: #e57373;
+    color: #e57373;
+    background: rgba(229,115,115,0.1);
+  }
+  .btn-danger:hover {
+    background: rgba(229,115,115,0.25);
+  }
+
+  /* ── Overall Progress Banner ── */
+  .overall-progress {
+    max-width: 600px;
+    margin: 0 auto 1.5rem;
+    padding: 0 1rem;
+    text-align: center;
+  }
+
+  .overall-progress .label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    color: var(--gold);
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.08em;
+  }
+
+  .progress-bar-outer {
+    height: 14px;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid var(--dark-gold);
+    border-radius: 7px;
+    overflow: hidden;
+  }
+
+  .progress-bar-inner {
+    height: 100%;
+    background: linear-gradient(90deg, var(--dark-gold), var(--gold), #ffd54f);
+    border-radius: 7px;
+    transition: width 0.6s ease;
+    position: relative;
+  }
+
+  .progress-bar-inner::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, transparent 60%);
+    border-radius: 7px;
+  }
+
+  /* ── Kingdom Map ── */
+  .kingdom-map {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto 2rem;
+    padding: 0 1rem;
+  }
+
+  /* ── District Card ── */
+  .district-card {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.3s;
+    cursor: pointer;
+  }
+
+  .district-card:hover {
+    transform: translateY(-3px);
+  }
+
+  /* Unlocked district */
+  .district-card.unlocked {
+    border-color: var(--dark-gold);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  }
+  .district-card.unlocked:hover {
+    box-shadow: 0 8px 30px rgba(201,162,39,0.3);
+  }
+
+  /* Tier glow effects */
+  .district-card[data-tier="100"] {
+    border-color: var(--glow-gold);
+    box-shadow: 0 0 30px rgba(255,213,79,0.4), 0 4px 20px rgba(0,0,0,0.5);
+    animation: grand-glow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes grand-glow {
+    from { box-shadow: 0 0 20px rgba(255,213,79,0.3), 0 4px 20px rgba(0,0,0,0.5); }
+    to   { box-shadow: 0 0 50px rgba(255,213,79,0.6), 0 4px 20px rgba(0,0,0,0.5); }
+  }
+
+  /* Locked district */
+  .district-card.locked {
+    border-color: #334;
+    opacity: 0.7;
+    cursor: default;
+  }
+  .district-card.locked:hover { transform: none; }
+
+  /* District visual area */
+  .district-visual {
+    height: 160px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .district-scene {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    inset: 0;
+  }
+
+  /* Fog overlay for locked */
+  .fog-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #8899aa 0%, #aabbcc 50%, #778899 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .fog-text {
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.1em;
+  }
+
+  .lock-icon { font-size: 2rem; opacity: 0.4; }
+
+  /* District info bar */
+  .district-info {
+    padding: 0.8rem 1rem;
+    background: linear-gradient(180deg, rgba(20,15,10,0.95) 0%, rgba(30,20,10,0.98) 100%);
+  }
+
+  .district-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    color: var(--gold);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+  .district-subtitle {
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--dark-parchment);
+    opacity: 0.8;
+  }
+
+  .district-progress-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .district-progress-bar {
+    flex: 1;
+    height: 8px;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid var(--dark-gold);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .district-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--dark-gold), var(--gold));
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+
+  .district-progress-pct {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    color: var(--gold);
+    min-width: 36px;
+    text-align: right;
+  }
+
+  .district-tier-badge {
+    font-size: 0.7rem;
+    padding: 0.1rem 0.5rem;
+    border-radius: 3px;
+    border: 1px solid;
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.05em;
+  }
+
+  .tier-0  { border-color: #556; color: #889; background: rgba(85,85,102,0.2); }
+  .tier-25 { border-color: #8b6914; color: #c9a227; background: rgba(139,105,20,0.2); }
+  .tier-50 { border-color: #7a7a7a; color: #aaa; background: rgba(122,122,122,0.2); }
+  .tier-75 { border-color: #5588bb; color: #88aadd; background: rgba(85,136,187,0.2); }
+  .tier-100 { border-color: #ffd54f; color: #ffd54f; background: rgba(255,213,79,0.15); }
+
+  /* ── Checklist Panel ── */
+  .panel-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .panel-overlay.open { display: flex; }
+
+  .panel {
+    background: linear-gradient(180deg, #1e1408 0%, #150e05 100%);
+    border: 2px solid var(--dark-gold);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 60px rgba(201,162,39,0.2);
+  }
+
+  .panel-header {
+    padding: 1rem 1.25rem;
+    background: linear-gradient(90deg, rgba(201,162,39,0.1) 0%, rgba(201,162,39,0.05) 100%);
+    border-bottom: 1px solid var(--dark-gold);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .panel-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.2rem;
+    color: var(--gold);
+    flex: 1;
+  }
+
+  .panel-close {
+    background: none;
+    border: none;
+    color: var(--gold);
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+  .panel-close:hover { opacity: 1; }
+
+  .panel-body {
+    overflow-y: auto;
+    padding: 1rem 1.25rem;
+    flex: 1;
+  }
+
+  /* scrollbar */
+  .panel-body::-webkit-scrollbar { width: 6px; }
+  .panel-body::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+  .panel-body::-webkit-scrollbar-thumb { background: var(--dark-gold); border-radius: 3px; }
+
+  /* ── Tier sections ── */
+  .tier-section { margin-bottom: 1.5rem; }
+
+  .tier-section-header {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid rgba(201,162,39,0.3);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .tier-count {
+    font-size: 0.75rem;
+    color: var(--dark-parchment);
+    opacity: 0.7;
+  }
+
+  /* ── Topic items ── */
+  .topic-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.45rem 0.5rem;
+    border-radius: 6px;
+    transition: background 0.15s;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .topic-item:hover { background: rgba(201,162,39,0.08); }
+
+  .topic-checkbox {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    border: 2px solid var(--dark-gold);
+    border-radius: 4px;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    font-size: 12px;
+    color: var(--bg-dark);
+  }
+
+  .topic-item.checked .topic-checkbox {
+    background: var(--gold);
+    border-color: var(--gold);
+    box-shadow: 0 0 6px rgba(201,162,39,0.5);
+  }
+
+  .topic-label {
+    font-size: 0.95rem;
+    color: var(--parchment);
+    flex: 1;
+    line-height: 1.3;
+  }
+
+  .topic-item.checked .topic-label {
+    text-decoration: line-through;
+    opacity: 0.5;
+  }
+
+  .topic-stars {
+    font-size: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  /* Edit mode controls on topic */
+  .topic-edit-controls {
+    display: none;
+    gap: 0.3rem;
+  }
+  .edit-mode .topic-edit-controls { display: flex; }
+  .edit-mode .topic-item { cursor: default; }
+  .edit-mode .topic-item:hover { background: rgba(201,162,39,0.04); }
+
+  .topic-edit-btn {
+    background: none;
+    border: 1px solid rgba(201,162,39,0.3);
+    color: var(--gold);
+    border-radius: 3px;
+    width: 22px;
+    height: 22px;
+    font-size: 0.7rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+    padding: 0;
+  }
+  .topic-edit-btn:hover { background: rgba(201,162,39,0.2); }
+  .topic-edit-btn.del { border-color: rgba(229,115,115,0.4); color: #e57373; }
+  .topic-edit-btn.del:hover { background: rgba(229,115,115,0.15); }
+
+  /* Edit form inline */
+  .topic-edit-form {
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 0.5rem;
+    background: rgba(201,162,39,0.05);
+    border-radius: 6px;
+    border: 1px solid rgba(201,162,39,0.2);
+    margin: 0.2rem 0;
+  }
+
+  .topic-edit-form input[type="text"] {
+    flex: 1;
+    min-width: 120px;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--dark-gold);
+    border-radius: 4px;
+    color: var(--parchment);
+    padding: 0.3rem 0.6rem;
+    font-family: 'Crimson Text', serif;
+    font-size: 0.9rem;
+  }
+
+  .topic-edit-form select {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--dark-gold);
+    border-radius: 4px;
+    color: var(--parchment);
+    padding: 0.3rem 0.5rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    cursor: pointer;
+  }
+  .topic-edit-form select option { background: #1e1408; }
+
+  /* Add topic form */
+  .add-topic-section {
+    border-top: 1px solid rgba(201,162,39,0.2);
+    padding-top: 1rem;
+    margin-top: 0.5rem;
+    display: none;
+  }
+  .edit-mode .add-topic-section { display: block; }
+
+  .add-topic-section h4 {
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+    margin-bottom: 0.6rem;
+  }
+
+  .add-topic-form {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .add-topic-form input[type="text"] {
+    flex: 1;
+    min-width: 150px;
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--dark-gold);
+    border-radius: 4px;
+    color: var(--parchment);
+    padding: 0.4rem 0.7rem;
+    font-family: 'Crimson Text', serif;
+    font-size: 0.95rem;
+  }
+
+  .add-topic-form select {
+    background: rgba(0,0,0,0.4);
+    border: 1px solid var(--dark-gold);
+    border-radius: 4px;
+    color: var(--parchment);
+    padding: 0.4rem 0.5rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    cursor: pointer;
+  }
+  .add-topic-form select option { background: #1e1408; }
+
+  input[type="text"]:focus, select:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 6px rgba(201,162,39,0.3);
+  }
+
+  /* ── SVG Scene elements ── */
+  /* Ground */
+  .ground-base {
+    fill: #2d1f0f;
+  }
+
+  /* Fog animation */
+  @keyframes fog-drift {
+    0%   { transform: translateX(-5%); }
+    50%  { transform: translateX(5%); }
+    100% { transform: translateX(-5%); }
+  }
+
+  .fog-layer { animation: fog-drift 8s ease-in-out infinite; }
+  .fog-layer2 { animation: fog-drift 12s ease-in-out infinite reverse; }
+
+  /* Flag wave */
+  @keyframes flag-wave {
+    0%   { transform: skewX(0deg); }
+    50%  { transform: skewX(-8deg); }
+    100% { transform: skewX(0deg); }
+  }
+  .flag { animation: flag-wave 2s ease-in-out infinite; transform-origin: left center; }
+
+  /* Grand glow pulse */
+  @keyframes glow-pulse {
+    0%   { opacity: 0.3; }
+    50%  { opacity: 0.8; }
+    100% { opacity: 0.3; }
+  }
+  .glow-aura { animation: glow-pulse 2s ease-in-out infinite; }
+
+  /* Torch flicker */
+  @keyframes flicker {
+    0%,100% { opacity: 1; transform: scaleY(1); }
+    25%      { opacity: 0.8; transform: scaleY(0.9) scaleX(1.1); }
+    75%      { opacity: 0.9; transform: scaleY(1.1) scaleX(0.9); }
+  }
+  .torch-flame { animation: flicker 0.8s ease-in-out infinite; transform-origin: bottom center; }
+
+  /* Notification */
+  .notification {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    background: linear-gradient(135deg, #1e1408, #2a1c0a);
+    border: 2px solid var(--gold);
+    border-radius: 8px;
+    padding: 0.75rem 1.25rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    color: var(--gold);
+    z-index: 999;
+    box-shadow: 0 0 20px rgba(201,162,39,0.4);
+    transform: translateX(200%);
+    transition: transform 0.4s ease;
+    max-width: 280px;
+  }
+  .notification.show { transform: translateX(0); }
+
+  /* ── Responsive ── */
+  @media (max-width: 480px) {
+    .kingdom-map {
+      grid-template-columns: 1fr;
+    }
+    .panel { max-height: 95vh; }
+    header h1 { font-size: 1.6rem; }
+  }
+
+  /* Reset all */
+  .btn-reset {
+    border-color: #e57373;
+    color: #e57373;
+    background: rgba(229,115,115,0.1);
+    font-size: 0.7rem;
+  }
+  .btn-reset:hover {
+    background: rgba(229,115,115,0.2);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1 id="kingdom-title">⚕ Ophthalmology Kingdom ⚕</h1>
+  <div class="subtitle">Study the arcane arts — build your realm</div>
+  <div class="overall-progress">
+    <div class="label">KINGDOM POWER: <span id="overall-pct">0%</span></div>
+    <div class="progress-bar-outer">
+      <div class="progress-bar-inner" id="overall-bar" style="width:0%"></div>
+    </div>
+  </div>
+  <div class="header-controls">
+    <button class="btn" id="edit-mode-btn" onclick="toggleEditMode()">✎ Edit Mode</button>
+    <button class="btn btn-reset" onclick="confirmReset()">↺ Reset All</button>
+  </div>
+</header>
+
+<div class="kingdom-map" id="kingdom-map"></div>
+
+<!-- District Panel -->
+<div class="panel-overlay" id="panel-overlay" onclick="closePanelOnOverlay(event)">
+  <div class="panel">
+    <div class="panel-header">
+      <div class="panel-title" id="panel-title">Cornea District</div>
+      <button class="panel-close" onclick="closePanel()">×</button>
+    </div>
+    <div class="panel-body" id="panel-body"></div>
+  </div>
+</div>
+
+<!-- Notification -->
+<div class="notification" id="notification"></div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════════════════════════
+
+const DISTRICTS_DEF = [
+  {
+    id: 'cornea',
+    name: 'Cornea',
+    subtitle: 'The Crystal Citadel',
+    locked: false,
+    topics: [
+      // ⭐⭐⭐ Must Know
+      { id:'c1',  label:'Corneal layers (Epithelium, Bowman, Stroma, Descemet, Endothelium)', tier:3 },
+      { id:'c2',  label:'Tear film layers', tier:3 },
+      { id:'c3',  label:'Limbus & stem cells', tier:3 },
+      { id:'c4',  label:'Slit lamp techniques', tier:3 },
+      { id:'c5',  label:'Corneal topography vs tomography', tier:3 },
+      { id:'c6',  label:'AS-OCT interpretation', tier:3 },
+      { id:'c7',  label:'Specular microscopy & pachymetry', tier:3 },
+      { id:'c8',  label:'Aqueous deficiency vs evaporative dry eye', tier:3 },
+      { id:'c9',  label:'Meibomian gland dysfunction', tier:3 },
+      { id:'c10', label:'Dry eye treatment options', tier:3 },
+      { id:'c11', label:'Epithelial dystrophies (EBMD)', tier:3 },
+      { id:'c12', label:'Stromal dystrophies (Granular, Lattice, Macular)', tier:3 },
+      { id:'c13', label:'Fuchs endothelial dystrophy', tier:3 },
+      { id:'c14', label:'Keratoconus diagnosis & staging', tier:3 },
+      { id:'c15', label:'Keratoconus management & crosslinking', tier:3 },
+      { id:'c16', label:'Pellucid marginal degeneration', tier:3 },
+      { id:'c17', label:'HSV keratitis', tier:3 },
+      { id:'c18', label:'HZV keratitis', tier:3 },
+      { id:'c19', label:'Adenovirus keratitis', tier:3 },
+      { id:'c20', label:'Bacterial keratitis', tier:3 },
+      { id:'c21', label:'Fungal keratitis', tier:3 },
+      { id:'c22', label:'Acanthamoeba keratitis', tier:3 },
+      { id:'c23', label:'Vernal keratoconjunctivitis', tier:3 },
+      { id:'c24', label:'Stevens-Johnson syndrome', tier:3 },
+      { id:'c25', label:'Mucous membrane pemphigoid', tier:3 },
+      { id:'c26', label:'Peripheral ulcerative keratitis', tier:3 },
+      { id:'c27', label:'Scleritis & episcleritis', tier:3 },
+      { id:'c28', label:'Mooren ulcer', tier:3 },
+      { id:'c29', label:'OSSN', tier:3 },
+      { id:'c30', label:'Conjunctival melanoma & PAM', tier:3 },
+      { id:'c31', label:'PKP indications & complications', tier:3 },
+      { id:'c32', label:'DALK', tier:3 },
+      { id:'c33', label:'DSAEK vs DMEK', tier:3 },
+      { id:'c34', label:'Keratoprosthesis basics', tier:3 },
+      // ⭐⭐ Good to Know
+      { id:'c35', label:'Neurotrophic keratopathy', tier:2 },
+      { id:'c36', label:'Recurrent corneal erosion', tier:2 },
+      { id:'c37', label:'Limbal stem cell deficiency', tier:2 },
+      { id:'c38', label:'Exposure keratopathy', tier:2 },
+      { id:'c39', label:'Amniotic membrane graft', tier:2 },
+      { id:'c40', label:'Pterygium excision', tier:2 },
+      { id:'c41', label:'Limbal stem cell transplantation', tier:2 },
+      { id:'c42', label:'Tarsorrhaphy', tier:2 },
+      { id:'c43', label:'Pterygium vs pinguecula', tier:2 },
+      { id:'c44', label:'Band keratopathy', tier:2 },
+      { id:'c45', label:'Salzmann nodular degeneration', tier:2 },
+      { id:'c46', label:'Arcus senilis', tier:2 },
+      { id:'c47', label:'Peters anomaly', tier:2 },
+      { id:'c48', label:'Sclerocornea', tier:2 },
+      { id:'c49', label:'Limbal dermoid', tier:2 },
+      { id:'c50', label:'Anterior segment dysgenesis', tier:2 },
+      { id:'c51', label:'Wilson disease (KF ring)', tier:2 },
+      { id:'c52', label:'Cystinosis', tier:2 },
+      { id:'c53', label:'Marfan syndrome cornea', tier:2 },
+      { id:'c54', label:'Vitamin A deficiency', tier:2 },
+      { id:'c55', label:'Chemical burns (alkali vs acid)', tier:2 },
+      { id:'c56', label:'Traumatic hyphema', tier:2 },
+      { id:'c57', label:'Corneal foreign body', tier:2 },
+      { id:'c58', label:'Penetrating trauma management', tier:2 },
+      // ⭐ Low Yield
+      { id:'c59', label:'Specific dry eye scoring systems', tier:1 },
+      { id:'c60', label:'Rare metabolic disorders (Mucolipidoses, Oligosaccharidoses)', tier:1 },
+      { id:'c61', label:'Loiasis', tier:1 },
+      { id:'c62', label:'Parinaud oculoglandular syndrome', tier:1 },
+      { id:'c63', label:'Oncocytoma', tier:1 },
+      { id:'c64', label:'Rare mesenchymal tumors', tier:1 },
+      { id:'c65', label:'Metastatic conjunctival tumors', tier:1 },
+    ]
+  },
+  { id:'retina',   name:'Retina',                subtitle:'Crystal Tower',       locked: true, topics:[] },
+  { id:'glaucoma', name:'Glaucoma',              subtitle:'Stone Fortress',      locked: true, topics:[] },
+  { id:'neuro',    name:'Neuro-ophthalmology',   subtitle:"Wizard's Library",    locked: true, topics:[] },
+  { id:'uveitis',  name:'Uveitis',               subtitle:'Alchemist Quarter',   locked: true, topics:[] },
+  { id:'pediatric',name:'Pediatric Ophthalmology',subtitle:'Garden Village',     locked: true, topics:[] },
+  { id:'plastics', name:'Oculoplastics',         subtitle:'Royal Palace',        locked: true, topics:[] },
+  { id:'optics',   name:'Optics & Refraction',   subtitle:'The Observatory',     locked: true, topics:[] },
+];
+
+const TIER_LABELS = { 3: '⭐⭐⭐ Must Know', 2: '⭐⭐ Good to Know', 1: '⭐ Low Yield' };
+const TIER_STARS  = { 3: '⭐⭐⭐', 2: '⭐⭐', 1: '⭐' };
+
+// ══════════════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════════════
+
+let state = { checked: {}, topics: {} };
+let editMode = false;
+let currentDistrict = null;
+let editingTopicId = null;
+
+function loadState() {
+  try {
+    const s = localStorage.getItem('ophthoKingdom');
+    if (s) state = JSON.parse(s);
+  } catch(e) {}
+  // Ensure all default topics exist
+  DISTRICTS_DEF.forEach(d => {
+    if (!state.topics[d.id]) state.topics[d.id] = d.topics.map(t => ({...t}));
+  });
+}
+
+function saveState() {
+  localStorage.setItem('ophthoKingdom', JSON.stringify(state));
+}
+
+function getTopics(districtId) {
+  return state.topics[districtId] || [];
+}
+
+// ══════════════════════════════════════════════════════════════
+//  PROGRESS CALCULATION
+// ══════════════════════════════════════════════════════════════
+
+function calcProgress(districtId) {
+  const topics = getTopics(districtId);
+  const must = topics.filter(t => t.tier === 3);
+  const good = topics.filter(t => t.tier === 2);
+  if (must.length === 0) return 0;
+  const mustDone = must.filter(t => state.checked[t.id]).length;
+  const goodDone = good.filter(t => state.checked[t.id]).length;
+  // Main progress = must know %
+  return Math.round((mustDone / must.length) * 100);
+}
+
+function calcOverall() {
+  const unlocked = DISTRICTS_DEF.filter(d => !d.locked);
+  if (!unlocked.length) return 0;
+  const sum = unlocked.reduce((a,d) => a + calcProgress(d.id), 0);
+  return Math.round(sum / unlocked.length);
+}
+
+function getTier(pct) {
+  if (pct >= 100) return 100;
+  if (pct >= 75)  return 75;
+  if (pct >= 50)  return 50;
+  if (pct >= 25)  return 25;
+  return 0;
+}
+
+function getTierLabel(tier) {
+  const labels = {
+    0: 'Barren Wasteland',
+    25: 'Humble Settlement',
+    50: 'Growing Town',
+    75: 'Castle District',
+    100: 'Grand Kingdom'
+  };
+  return labels[tier] || 'Barren';
+}
+
+// ══════════════════════════════════════════════════════════════
+//  SVG SCENE RENDERING
+// ══════════════════════════════════════════════════════════════
+
+function renderScene(districtId, pct, locked) {
+  if (locked) {
+    return `<div class="fog-overlay">
+      <div class="lock-icon">🔒</div>
+      <div class="fog-text">UNDISCOVERED</div>
+    </div>`;
+  }
+
+  const tier = getTier(pct);
+  const W = 280, H = 160;
+
+  // Sky gradient per tier
+  const skies = {
+    0:   ['#2a2030','#1a1025'],
+    25:  ['#3a2820','#251510'],
+    50:  ['#1e2840','#0d1520'],
+    75:  ['#1a3050','#0a1828'],
+    100: ['#0a2040','#050f20'],
+  };
+  const sky = skies[tier];
+
+  let svgContent = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+  <defs>
+    <linearGradient id="sky${districtId}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${sky[0]}"/>
+      <stop offset="100%" stop-color="${sky[1]}"/>
+    </linearGradient>
+    <radialGradient id="glow${districtId}" cx="50%" cy="100%" r="60%">
+      <stop offset="0%" stop-color="#ffd54f" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#ffd54f" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="blur${districtId}">
+      <feGaussianBlur stdDeviation="3"/>
+    </filter>
+  </defs>
+  <!-- Sky -->
+  <rect width="${W}" height="${H}" fill="url(#sky${districtId})"/>`;
+
+  // Ground
+  const groundY = 110;
+  const groundColors = {
+    0:   '#1a0f08',
+    25:  '#2d1a0a',
+    50:  '#2a2218',
+    75:  '#1e2a18',
+    100: '#142010',
+  };
+  svgContent += `
+  <rect x="0" y="${groundY}" width="${W}" height="${H-groundY}" fill="${groundColors[tier]}"/>`;
+
+  if (tier === 0) {
+    // ── Tier 0: Barren foggy wasteland
+    svgContent += `
+  <!-- Dead trees -->
+  <line x1="30" y1="${groundY}" x2="30" y2="75" stroke="#3a2510" stroke-width="3"/>
+  <line x1="30" y1="85" x2="20" y2="75" stroke="#3a2510" stroke-width="2"/>
+  <line x1="30" y1="85" x2="40" y2="78" stroke="#3a2510" stroke-width="2"/>
+  <line x1="220" y1="${groundY}" x2="220" y2="80" stroke="#3a2510" stroke-width="2.5"/>
+  <line x1="220" y1="90" x2="210" y2="82" stroke="#3a2510" stroke-width="1.5"/>
+  <!-- Rocks -->
+  <ellipse cx="120" cy="${groundY+5}" rx="18" ry="8" fill="#2a1f15"/>
+  <ellipse cx="170" cy="${groundY+6}" rx="12" ry="6" fill="#251a10"/>
+  <!-- Fog layers -->
+  <rect class="fog-layer"  x="-20" y="85" width="320" height="30" rx="15" fill="rgba(180,190,200,0.12)"/>
+  <rect class="fog-layer2" x="-30" y="95" width="340" height="20" rx="10" fill="rgba(160,175,190,0.1)"/>`;
+
+  } else if (tier === 25) {
+    // ── Tier 25: Dirt roads, wooden huts
+    svgContent += `
+  <!-- Dirt road -->
+  <path d="M0,${groundY+5} Q140,${groundY+2} 280,${groundY+5}" stroke="#5c3a1a" stroke-width="8" fill="none" opacity="0.7"/>
+  <!-- Hut 1 -->
+  <rect x="60" y="85" width="40" height="25" fill="#5c3a1a"/>
+  <polygon points="55,85 100,85 77,65" fill="#7a4a20"/>
+  <rect x="73" y="97" width="9" height="13" fill="#3a2010"/>
+  <!-- Hut 2 -->
+  <rect x="170" y="88" width="32" height="22" fill="#4a2e12"/>
+  <polygon points="165,88 207,88 186,70" fill="#6a3a18"/>
+  <rect x="182" y="99" width="8" height="11" fill="#2a1808"/>
+  <!-- Fence -->
+  <line x1="110" y1="${groundY}" x2="110" y2="95" stroke="#6a4a20" stroke-width="2"/>
+  <line x1="120" y1="${groundY}" x2="120" y2="95" stroke="#6a4a20" stroke-width="2"/>
+  <line x1="130" y1="${groundY}" x2="130" y2="95" stroke="#6a4a20" stroke-width="2"/>
+  <line x1="108" y1="98" x2="132" y2="98" stroke="#6a4a20" stroke-width="2"/>
+  <line x1="108" y1="92" x2="132" y2="92" stroke="#6a4a20" stroke-width="2"/>
+  <!-- Small tree -->
+  <line x1="240" y1="${groundY}" x2="240" y2="82" stroke="#4a2e12" stroke-width="2.5"/>
+  <circle cx="240" cy="75" r="12" fill="#2a4a1a" opacity="0.9"/>`;
+
+  } else if (tier === 50) {
+    // ── Tier 50: Stone buildings
+    svgContent += `
+  <!-- Stone road -->
+  <path d="M0,${groundY+5} Q140,${groundY+1} 280,${groundY+5}" stroke="#6a6060" stroke-width="10" fill="none" opacity="0.6"/>
+  <!-- Stone building 1 (main hall) -->
+  <rect x="80" y="72" width="60" height="38" fill="#6a6a6a"/>
+  <rect x="83" y="75" width="14" height="14" fill="#4a4444" rx="1"/>
+  <rect x="103" y="75" width="14" height="14" fill="#4a4444" rx="1"/>
+  <rect x="103" y="92" width="12" height="18" fill="#3a3030"/>
+  <!-- Battlement top -->
+  <rect x="78" y="67" width="10" height="8" fill="#7a7a7a"/>
+  <rect x="92" y="67" width="10" height="8" fill="#7a7a7a"/>
+  <rect x="106" y="67" width="10" height="8" fill="#7a7a7a"/>
+  <rect x="120" y="67" width="10" height="8" fill="#7a7a7a"/>
+  <!-- Wall segments -->
+  <rect x="30" y="85" width="50" height="25" fill="#5a5a5a"/>
+  <rect x="190" y="82" width="55" height="28" fill="#5a5a5a"/>
+  <!-- Wall battlements -->
+  <rect x="28" y="80" width="8" height="8" fill="#6a6a6a"/>
+  <rect x="40" y="80" width="8" height="8" fill="#6a6a6a"/>
+  <rect x="52" y="80" width="8" height="8" fill="#6a6a6a"/>
+  <rect x="188" y="77" width="8" height="8" fill="#6a6a6a"/>
+  <rect x="200" y="77" width="8" height="8" fill="#6a6a6a"/>
+  <rect x="212" y="77" width="8" height="8" fill="#6a6a6a"/>
+  <!-- Gate arch -->
+  <rect x="103" y="92" width="12" height="18" fill="#2a2020" rx="6 6 0 0"/>
+  <!-- Torches -->
+  <rect x="100" y="87" width="3" height="8" fill="#8b6914"/>
+  <ellipse class="torch-flame" cx="101.5" cy="86" rx="3" ry="4" fill="#ffa500" opacity="0.9"/>
+  <rect x="118" y="87" width="3" height="8" fill="#8b6914"/>
+  <ellipse class="torch-flame" cx="119.5" cy="86" rx="3" ry="4" fill="#ffa500" opacity="0.9"/>`;
+
+  } else if (tier === 75) {
+    // ── Tier 75: Castle with towers and flags
+    svgContent += `
+  <!-- Stone path -->
+  <path d="M0,${groundY+5} Q140,${groundY+1} 280,${groundY+5}" stroke="#8a7a6a" stroke-width="12" fill="none" opacity="0.5"/>
+  <!-- Left tower -->
+  <rect x="25" y="60" width="35" height="50" fill="#7a7a7a"/>
+  <rect x="22" y="55" width="10" height="8" fill="#8a8a8a"/>
+  <rect x="34" y="55" width="10" height="8" fill="#8a8a8a"/>
+  <rect x="46" y="55" width="10" height="8" fill="#8a8a8a"/>
+  <rect x="28" y="72" width="10" height="12" fill="#3a3030" rx="5 5 0 0"/>
+  <!-- Right tower -->
+  <rect x="218" y="55" width="38" height="55" fill="#7a7a7a"/>
+  <rect x="215" y="50" width="10" height="8" fill="#8a8a8a"/>
+  <rect x="228" y="50" width="10" height="8" fill="#8a8a8a"/>
+  <rect x="241" y="50" width="10" height="8" fill="#8a8a8a"/>
+  <rect x="222" y="68" width="10" height="12" fill="#3a3030" rx="5 5 0 0"/>
+  <!-- Main castle wall -->
+  <rect x="60" y="70" width="160" height="40" fill="#6a6a6a"/>
+  <!-- Castle battlements -->
+  <rect x="58" y="65" width="10" height="8" fill="#7a7a7a"/>
+  <rect x="72" y="65" width="10" height="8" fill="#7a7a7a"/>
+  <rect x="86" y="65" width="10" height="8" fill="#7a7a7a"/>
+  <rect x="100" y="65" width="10" height="8" fill="#7a7a7a"/>
+  <rect x="114" y="65" width="10" height="8" fill="#7a7a7a"/>
+  <rect x="128" y="65" width="10" height="8" fill="#7a7a7a"/>
+  <rect x="142" y="65" width="10" height="8" fill="#7a7a7a"/>
+  <rect x="156" y="65" width="10" height="8" fill="#7a7a7a"/>
+  <rect x="170" y="65" width="10" height="8" fill="#7a7a7a"/>
+  <rect x="184" y="65" width="10" height="8" fill="#7a7a7a"/>
+  <rect x="198" y="65" width="10" height="8" fill="#7a7a7a"/>
+  <!-- Central keep -->
+  <rect x="105" y="45" width="70" height="65" fill="#8a8080"/>
+  <rect x="102" y="38" width="12" height="10" fill="#9a9090"/>
+  <rect x="116" y="38" width="12" height="10" fill="#9a9090"/>
+  <rect x="130" y="38" width="12" height="10" fill="#9a9090"/>
+  <rect x="144" y="38" width="12" height="10" fill="#9a9090"/>
+  <rect x="158" y="38" width="12" height="10" fill="#9a9090"/>
+  <!-- Gate -->
+  <rect x="127" y="80" width="26" height="30" fill="#1a1010" rx="13 13 0 0"/>
+  <!-- Windows -->
+  <rect x="115" y="55" width="9" height="12" fill="#2a3a5a" rx="4 4 0 0"/>
+  <rect x="131" y="52" width="9" height="14" fill="#2a3a5a" rx="4 4 0 0"/>
+  <rect x="147" y="55" width="9" height="12" fill="#2a3a5a" rx="4 4 0 0"/>
+  <!-- Flags -->
+  <line x1="42" y1="22" x2="42" y2="55" stroke="#5a4030" stroke-width="2"/>
+  <polygon class="flag" points="42,22 65,30 42,38" fill="#cc3333"/>
+  <line x1="234" y1="18" x2="234" y2="50" stroke="#5a4030" stroke-width="2"/>
+  <polygon class="flag" points="234,18 257,26 234,34" fill="#cc3333"/>
+  <line x1="140" y1="5" x2="140" y2="38" stroke="#5a4030" stroke-width="2.5"/>
+  <polygon class="flag" points="140,5 168,15 140,25" fill="#bb2222"/>
+  <!-- Torches on wall -->
+  <rect x="94" y="76" width="3" height="9" fill="#8b6914"/>
+  <ellipse class="torch-flame" cx="95.5" cy="74" rx="3.5" ry="5" fill="#ffaa00" opacity="0.9"/>
+  <rect x="184" y="76" width="3" height="9" fill="#8b6914"/>
+  <ellipse class="torch-flame" cx="185.5" cy="74" rx="3.5" ry="5" fill="#ffaa00" opacity="0.9"/>`;
+
+  } else {
+    // ── Tier 100: Grand glowing district
+    svgContent += `
+  <!-- Glow aura -->
+  <ellipse class="glow-aura" cx="140" cy="${groundY}" rx="120" ry="50" fill="url(#glow${districtId})"/>
+  <!-- Paved road with glow -->
+  <path d="M0,${groundY+5} Q140,${groundY+1} 280,${groundY+5}" stroke="#c9a227" stroke-width="10" fill="none" opacity="0.3"/>
+  <!-- Stars / sparkles -->
+  <circle cx="50"  cy="20" r="2" fill="#ffd54f" opacity="0.9"/>
+  <circle cx="100" cy="10" r="1.5" fill="#fff" opacity="0.8"/>
+  <circle cx="180" cy="15" r="2" fill="#ffd54f" opacity="0.9"/>
+  <circle cx="240" cy="25" r="1.5" fill="#fff" opacity="0.7"/>
+  <circle cx="30"  cy="40" r="1" fill="#ffd54f" opacity="0.6"/>
+  <circle cx="260" cy="35" r="1.5" fill="#ffd54f" opacity="0.8"/>
+  <!-- Left grand tower -->
+  <rect x="15" y="45" width="40" height="65" fill="#9a9090"/>
+  <polygon points="15,45 55,45 35,20" fill="#aa7722"/>
+  <rect x="12" y="38" width="12" height="10" fill="#aaa"/>
+  <rect x="26" y="38" width="12" height="10" fill="#aaa"/>
+  <rect x="40" y="38" width="12" height="10" fill="#aaa"/>
+  <!-- Right grand tower -->
+  <rect x="225" y="40" width="42" height="70" fill="#9a9090"/>
+  <polygon points="225,40 267,40 246,14" fill="#aa7722"/>
+  <rect x="222" y="33" width="12" height="10" fill="#aaa"/>
+  <rect x="236" y="33" width="12" height="10" fill="#aaa"/>
+  <rect x="250" y="33" width="12" height="10" fill="#aaa"/>
+  <!-- Castle wall -->
+  <rect x="55" y="65" width="170" height="45" fill="#8a8080"/>
+  <!-- Central grand keep -->
+  <rect x="100" y="30" width="80" height="80" fill="#9a9090"/>
+  <polygon points="100,30 180,30 140,5" fill="#c9a227"/>
+  <!-- Battlements gold-tipped -->
+  <rect x="97" y="23" width="11" height="10" fill="#aaa"/>
+  <rect x="111" y="23" width="11" height="10" fill="#aaa"/>
+  <rect x="125" y="23" width="11" height="10" fill="#aaa"/>
+  <rect x="139" y="23" width="11" height="10" fill="#aaa"/>
+  <rect x="153" y="23" width="11" height="10" fill="#aaa"/>
+  <rect x="167" y="23" width="11" height="10" fill="#aaa"/>
+  <!-- Windows glowing blue -->
+  <rect x="112" y="45" width="12" height="16" fill="#4fc3f7" rx="6 6 0 0" opacity="0.9"/>
+  <rect x="130" y="42" width="14" height="18" fill="#4fc3f7" rx="7 7 0 0" opacity="0.9"/>
+  <rect x="150" y="45" width="12" height="16" fill="#4fc3f7" rx="6 6 0 0" opacity="0.9"/>
+  <!-- Window glow -->
+  <rect x="112" y="45" width="12" height="16" fill="#4fc3f7" rx="6 6 0 0" opacity="0.3" filter="url(#blur${districtId})"/>
+  <rect x="130" y="42" width="14" height="18" fill="#4fc3f7" rx="7 7 0 0" opacity="0.3" filter="url(#blur${districtId})"/>
+  <!-- Arched gate glowing -->
+  <rect x="126" y="75" width="28" height="35" fill="#0a0808" rx="14 14 0 0"/>
+  <rect x="126" y="75" width="28" height="35" fill="#4fc3f7" rx="14 14 0 0" opacity="0.1" filter="url(#blur${districtId})"/>
+  <!-- Gold flags -->
+  <line x1="35" y1="-8" x2="35" y2="45" stroke="#6a5020" stroke-width="2.5"/>
+  <polygon class="flag" points="35,-8 65,4 35,16" fill="#c9a227"/>
+  <line x1="246" y1="-12" x2="246" y2="40" stroke="#6a5020" stroke-width="2.5"/>
+  <polygon class="flag" points="246,-12 276,0 246,12" fill="#c9a227"/>
+  <line x1="140" y1="-15" x2="140" y2="5" stroke="#6a5020" stroke-width="3"/>
+  <polygon class="flag" points="140,-15 175,-2 140,11" fill="#ffd54f"/>
+  <!-- Glowing torches -->
+  <rect x="95" y="68" width="4" height="12" fill="#8b6914"/>
+  <ellipse class="torch-flame" cx="97" cy="65" rx="5" ry="7" fill="#ffd54f" opacity="1"/>
+  <ellipse cx="97" cy="65" rx="8" ry="10" fill="#ffd54f" opacity="0.15" filter="url(#blur${districtId})"/>
+  <rect x="183" y="68" width="4" height="12" fill="#8b6914"/>
+  <ellipse class="torch-flame" cx="185" cy="65" rx="5" ry="7" fill="#ffd54f" opacity="1"/>
+  <ellipse cx="185" cy="65" rx="8" ry="10" fill="#ffd54f" opacity="0.15" filter="url(#blur${districtId})"/>
+  <!-- Ground glow -->
+  <ellipse class="glow-aura" cx="140" cy="${groundY+5}" rx="80" ry="12" fill="#c9a227" opacity="0.08"/>`;
+  }
+
+  svgContent += `</svg>`;
+  return svgContent;
+}
+
+// ══════════════════════════════════════════════════════════════
+//  RENDER KINGDOM MAP
+// ══════════════════════════════════════════════════════════════
+
+function renderMap() {
+  const map = document.getElementById('kingdom-map');
+  const overall = calcOverall();
+  document.getElementById('overall-pct').textContent = overall + '%';
+  document.getElementById('overall-bar').style.width = overall + '%';
+
+  map.innerHTML = DISTRICTS_DEF.map(d => {
+    if (d.locked) {
+      return `<div class="district-card locked">
+        <div class="district-visual">${renderScene(d.id, 0, true)}</div>
+        <div class="district-info">
+          <div class="district-name">${d.name}</div>
+          <div class="district-subtitle">${d.subtitle}</div>
+          <div class="district-progress-row">
+            <div class="district-tier-badge tier-0">Undiscovered</div>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    const pct = calcProgress(d.id);
+    const tier = getTier(pct);
+    const tierLabel = getTierLabel(tier);
+    const tierClass = `tier-${tier}`;
+    const topics = getTopics(d.id);
+    const must = topics.filter(t => t.tier === 3);
+    const mustDone = must.filter(t => state.checked[t.id]).length;
+
+    return `<div class="district-card unlocked" data-tier="${tier}" onclick="openPanel('${d.id}')">
+      <div class="district-visual district-scene">${renderScene(d.id, pct, false)}</div>
+      <div class="district-info">
+        <div class="district-name">${d.name}</div>
+        <div class="district-subtitle">${d.subtitle}</div>
+        <div class="district-progress-row">
+          <div class="district-progress-bar">
+            <div class="district-progress-fill" style="width:${pct}%"></div>
+          </div>
+          <div class="district-progress-pct">${pct}%</div>
+        </div>
+        <div style="margin-top:0.3rem">
+          <span class="district-tier-badge ${tierClass}">${tierLabel}</span>
+          <span style="font-size:0.75rem;color:var(--dark-parchment);opacity:0.6;margin-left:0.5rem">${mustDone}/${must.length} must-know</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════════════════
+//  PANEL
+// ══════════════════════════════════════════════════════════════
+
+function openPanel(districtId) {
+  const d = DISTRICTS_DEF.find(x => x.id === districtId);
+  if (!d || d.locked) return;
+  currentDistrict = districtId;
+  editingTopicId = null;
+  document.getElementById('panel-title').textContent = `${d.name} — ${d.subtitle}`;
+  renderPanel();
+  document.getElementById('panel-overlay').classList.add('open');
+}
+
+function closePanel() {
+  document.getElementById('panel-overlay').classList.remove('open');
+  currentDistrict = null;
+  editingTopicId = null;
+}
+
+function closePanelOnOverlay(e) {
+  if (e.target === document.getElementById('panel-overlay')) closePanel();
+}
+
+function renderPanel() {
+  if (!currentDistrict) return;
+  const topics = getTopics(currentDistrict);
+  const pct = calcProgress(currentDistrict);
+  const body = document.getElementById('panel-body');
+  const isEdit = editMode;
+
+  let html = `<div class="${isEdit ? 'edit-mode' : ''}">`;
+
+  // Progress mini-bar at top
+  html += `<div style="margin-bottom:1rem">
+    <div style="font-family:'Cinzel',serif;font-size:0.75rem;color:var(--gold);margin-bottom:0.3rem;letter-spacing:0.08em">
+      DISTRICT PROGRESS: ${pct}% — ${getTierLabel(getTier(pct))}
+    </div>
+    <div class="progress-bar-outer">
+      <div class="progress-bar-inner" style="width:${pct}%"></div>
+    </div>
+  </div>`;
+
+  [3, 2, 1].forEach(tier => {
+    const tierTopics = topics.filter(t => t.tier === tier);
+    if (!tierTopics.length) return;
+    const done = tierTopics.filter(t => state.checked[t.id]).length;
+    html += `<div class="tier-section">
+      <div class="tier-section-header">
+        ${TIER_LABELS[tier]}
+        <span class="tier-count">${done}/${tierTopics.length}</span>
+      </div>`;
+
+    tierTopics.forEach(topic => {
+      if (editingTopicId === topic.id) {
+        // Inline edit form
+        html += `<div class="topic-edit-form" id="edit-form-${topic.id}">
+          <input type="text" id="edit-input-${topic.id}" value="${escHtml(topic.label)}" style="flex:1" onkeydown="handleEditKey(event,'${topic.id}')"/>
+          <select id="edit-tier-${topic.id}">
+            <option value="3" ${topic.tier===3?'selected':''}>⭐⭐⭐ Must</option>
+            <option value="2" ${topic.tier===2?'selected':''}>⭐⭐ Good</option>
+            <option value="1" ${topic.tier===1?'selected':''}>⭐ Low</option>
+          </select>
+          <button class="btn" style="padding:0.3rem 0.7rem;font-size:0.75rem" onclick="saveTopicEdit('${topic.id}')">Save</button>
+          <button class="btn btn-danger" style="padding:0.3rem 0.7rem;font-size:0.75rem" onclick="cancelTopicEdit()">Cancel</button>
+        </div>`;
+      } else {
+        const checked = !!state.checked[topic.id];
+        html += `<div class="topic-item ${checked?'checked':''}" id="topic-${topic.id}" onclick="${isEdit?'':'toggleTopic(\''+topic.id+'\')'}">
+          <div class="topic-checkbox">${checked?'✓':''}</div>
+          <div class="topic-label">${escHtml(topic.label)}</div>
+          <div class="topic-stars">${TIER_STARS[topic.tier]}</div>
+          <div class="topic-edit-controls">
+            <button class="topic-edit-btn" onclick="event.stopPropagation();startEditTopic('${topic.id}')" title="Edit">✎</button>
+            <button class="topic-edit-btn del" onclick="event.stopPropagation();deleteTopic('${topic.id}')" title="Delete">✕</button>
+          </div>
+        </div>`;
+      }
+    });
+
+    html += `</div>`;
+  });
+
+  // Add topic form (edit mode only)
+  html += `<div class="add-topic-section">
+    <h4>+ Add New Topic</h4>
+    <div class="add-topic-form">
+      <input type="text" id="new-topic-input" placeholder="Topic name…" onkeydown="if(event.key==='Enter')addTopic()"/>
+      <select id="new-topic-tier">
+        <option value="3">⭐⭐⭐ Must Know</option>
+        <option value="2">⭐⭐ Good to Know</option>
+        <option value="1">⭐ Low Yield</option>
+      </select>
+      <button class="btn" onclick="addTopic()">Add</button>
+    </div>
+  </div>`;
+
+  html += `</div>`;
+  body.innerHTML = html;
+}
+
+// ══════════════════════════════════════════════════════════════
+//  TOPIC ACTIONS
+// ══════════════════════════════════════════════════════════════
+
+function toggleTopic(topicId) {
+  if (editMode) return;
+  state.checked[topicId] = !state.checked[topicId];
+  saveState();
+  renderPanel();
+  renderMap();
+  // Check for tier milestone
+  if (state.checked[topicId] && currentDistrict) {
+    const pct = calcProgress(currentDistrict);
+    const tier = getTier(pct);
+    const tierMilestones = [25, 50, 75, 100];
+    if (tierMilestones.includes(tier)) {
+      const prev = getTier(pct - 1);  // rough check
+      if (prev < tier) {
+        showNotification(`🏰 ${getTierLabel(tier)} reached!`);
+      }
+    }
+  }
+}
+
+function startEditTopic(topicId) {
+  editingTopicId = topicId;
+  renderPanel();
+  setTimeout(() => {
+    const el = document.getElementById(`edit-input-${topicId}`);
+    if (el) { el.focus(); el.select(); }
+  }, 50);
+}
+
+function handleEditKey(e, topicId) {
+  if (e.key === 'Enter') saveTopicEdit(topicId);
+  if (e.key === 'Escape') cancelTopicEdit();
+}
+
+function saveTopicEdit(topicId) {
+  const input = document.getElementById(`edit-input-${topicId}`);
+  const tierSel = document.getElementById(`edit-tier-${topicId}`);
+  if (!input) return;
+  const newLabel = input.value.trim();
+  if (!newLabel) return;
+  const topics = state.topics[currentDistrict];
+  const t = topics.find(x => x.id === topicId);
+  if (t) {
+    t.label = newLabel;
+    t.tier = parseInt(tierSel.value);
+  }
+  editingTopicId = null;
+  saveState();
+  renderPanel();
+  renderMap();
+}
+
+function cancelTopicEdit() {
+  editingTopicId = null;
+  renderPanel();
+}
+
+function deleteTopic(topicId) {
+  if (!confirm('Remove this topic?')) return;
+  state.topics[currentDistrict] = state.topics[currentDistrict].filter(t => t.id !== topicId);
+  delete state.checked[topicId];
+  saveState();
+  renderPanel();
+  renderMap();
+}
+
+function addTopic() {
+  const input = document.getElementById('new-topic-input');
+  const tierSel = document.getElementById('new-topic-tier');
+  const label = input.value.trim();
+  if (!label) return;
+  const tier = parseInt(tierSel.value);
+  const id = currentDistrict + '_' + Date.now();
+  state.topics[currentDistrict].push({ id, label, tier });
+  saveState();
+  input.value = '';
+  renderPanel();
+  renderMap();
+  showNotification('Topic added!');
+}
+
+// ══════════════════════════════════════════════════════════════
+//  EDIT MODE
+// ══════════════════════════════════════════════════════════════
+
+function toggleEditMode() {
+  editMode = !editMode;
+  const btn = document.getElementById('edit-mode-btn');
+  btn.textContent = editMode ? '✎ Exit Edit Mode' : '✎ Edit Mode';
+  btn.classList.toggle('active', editMode);
+  if (currentDistrict) renderPanel();
+}
+
+// ══════════════════════════════════════════════════════════════
+//  RESET
+// ══════════════════════════════════════════════════════════════
+
+function confirmReset() {
+  if (!confirm('Reset ALL progress? This cannot be undone.')) return;
+  state.checked = {};
+  saveState();
+  renderMap();
+  if (currentDistrict) renderPanel();
+  showNotification('Kingdom reset. Begin anew, scholar.');
+}
+
+// ══════════════════════════════════════════════════════════════
+//  NOTIFICATION
+// ══════════════════════════════════════════════════════════════
+
+let notifTimer = null;
+function showNotification(msg) {
+  const el = document.getElementById('notification');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(notifTimer);
+  notifTimer = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// ══════════════════════════════════════════════════════════════
+//  UTILITIES
+// ══════════════════════════════════════════════════════════════
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ══════════════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════════════
+
+loadState();
+renderMap();
+</script>
+</body>
+</html>
