@@ -117,7 +117,7 @@ input[type=text]:focus,select:focus{outline:none;border-color:var(--gold);box-sh
 <div class="notification" id="notification"></div>
 
 <script>
-// ── DATA ──────────────────────────────────────────────────────
+// ── DATA ────────────────────────────────────────────────
 const DISTRICTS_DEF = [
   { id:'cornea', name:'Cornea', subtitle:'The Crystal Citadel', locked:false, topics:[
     {id:'c1', label:'Corneal layers (Epithelium, Bowman, Stroma, Descemet, Endothelium)', tier:3},
@@ -186,7 +186,196 @@ const DISTRICTS_DEF = [
     {id:'c64', label:'Rare mesenchymal tumors', tier:1},
     {id:'c65', label:'Metastatic conjunctival tumors', tier:1}
   ]},
-  {id:'retina',    name:'Retina',                subtitle:'Crystal Tower',      locked:true, topics:[]},
+  {id:'retina', name:'Retina', subtitle:'Crystal Tower', locked:false, topics:[
+    // ── Basic Anatomy ──
+    {id:'r1',  label:'Vitreous anatomy and structure', tier:3},
+    {id:'r2',  label:'Retinal topography (macula, fovea, ora serrata)', tier:3},
+    {id:'r3',  label:'Retinal layers and neurosensory elements', tier:3},
+    {id:'r4',  label:'Retinal vasculature and oxygen supply', tier:3},
+    {id:'r5',  label:'Retinal Pigment Epithelium (RPE) – structure and functions', tier:3},
+    {id:'r6',  label:'Bruch membrane structure and significance', tier:3},
+    {id:'r7',  label:'Choroid and choriocapillaris anatomy', tier:2},
+    // ── Diagnostic Imaging ──
+    {id:'r8',  label:'Indirect ophthalmoscopy technique (BIO + slit lamp)', tier:3},
+    {id:'r9',  label:'Fundus camera imaging', tier:3},
+    {id:'r10', label:'Optical Coherence Tomography (OCT) interpretation', tier:3},
+    {id:'r11', label:'OCT Angiography (OCTA)', tier:3},
+    {id:'r12', label:'Fundus Autofluorescence (FAF)', tier:3},
+    {id:'r13', label:'Fluorescein Angiography (FFA) interpretation', tier:3},
+    {id:'r14', label:'Indocyanine Green Angiography (ICGA)', tier:2},
+    {id:'r15', label:'Scanning Laser Ophthalmoscopy (SLO)', tier:2},
+    {id:'r16', label:'B-scan Ultrasonography', tier:3},
+    {id:'r17', label:'Adaptive Optics Imaging', tier:1},
+    // ── Electrophysiology & Psychophysics ──
+    {id:'r18', label:'Full-Field (Ganzfeld) Electroretinography', tier:3},
+    {id:'r19', label:'Multifocal Electroretinography (mfERG)', tier:2},
+    {id:'r20', label:'Pattern Electroretinography (PERG)', tier:2},
+    {id:'r21', label:'Electro-oculography (EOG) – Arden ratio', tier:2},
+    {id:'r22', label:'Visual Evoked Potentials (VEP)', tier:2},
+    {id:'r23', label:'Microperimetry', tier:2},
+    {id:'r24', label:'Color vision testing', tier:2},
+    {id:'r25', label:'Contrast Sensitivity & Dark Adaptometry', tier:1},
+    // ── AMD & Choroidal Neovascularization ──
+    {id:'r26', label:'AMD genetics, risk factors, and drusen types', tier:3},
+    {id:'r27', label:'Nonneovascular AMD – geographic atrophy, staging', tier:3},
+    {id:'r28', label:'Neovascular AMD – OCT and FFA diagnosis', tier:3},
+    {id:'r29', label:'Anti-VEGF therapy for neovascular AMD (protocols)', tier:3},
+    {id:'r30', label:'AMD – photodynamic therapy and complement inhibition', tier:2},
+    {id:'r31', label:'Ocular Histoplasmosis Syndrome (OHS)', tier:2},
+    {id:'r32', label:'Angioid Streaks – associations and management', tier:2},
+    {id:'r33', label:'Idiopathic CNV and miscellaneous causes of CNV', tier:2},
+    // ── Diabetic Retinopathy ──
+    {id:'r34', label:'Diabetic Retinopathy classification (ETDRS / ICDR)', tier:3},
+    {id:'r35', label:'Pathogenesis of diabetic retinopathy', tier:3},
+    {id:'r36', label:'DM ophthalmic screening schedule', tier:3},
+    {id:'r37', label:'NPDR – findings and management thresholds', tier:3},
+    {id:'r38', label:'Proliferative Diabetic Retinopathy – diagnosis and management', tier:3},
+    {id:'r39', label:'Panretinal Photocoagulation (PRP) – technique and indications', tier:3},
+    {id:'r40', label:'Diabetic Macular Edema classification (center-involving)', tier:3},
+    {id:'r41', label:'DME management – anti-VEGF, steroids, focal laser', tier:3},
+    {id:'r42', label:'Cataract surgery in diabetic patients', tier:2},
+    {id:'r43', label:'Systemic medical management of DR (HbA1c, BP, lipids)', tier:2},
+    // ── Hypertensive Retinopathy ──
+    {id:'r44', label:'Hypertensive Retinopathy – classification (Keith-Wagener)', tier:3},
+    {id:'r45', label:'Hypertensive Choroidopathy (Elschnig spots)', tier:2},
+    {id:'r46', label:'Hypertensive Optic Neuropathy', tier:2},
+    // ── Retinal Venous Occlusion ──
+    {id:'r47', label:'BRVO – diagnosis, imaging, and management', tier:3},
+    {id:'r48', label:'CRVO – ischemic vs non-ischemic distinction', tier:3},
+    {id:'r49', label:'CRVO – anti-VEGF, steroids, and neovascular glaucoma', tier:3},
+    // ── Arterial Occlusion ──
+    {id:'r50', label:'CRAO – emergency workup and management', tier:3},
+    {id:'r51', label:'BRAO – diagnosis and systemic evaluation', tier:3},
+    {id:'r52', label:'Cotton-Wool Spots – etiology and significance', tier:3},
+    {id:'r53', label:'Cilioretinal Artery Occlusion', tier:2},
+    {id:'r54', label:'Ocular Ischemic Syndrome (OIS)', tier:2},
+    {id:'r55', label:'Arterial Macroaneurysms', tier:2},
+    {id:'r56', label:'Paracentral Acute Middle Maculopathy (PAMM)', tier:2},
+    {id:'r57', label:'Ophthalmic Artery Occlusion', tier:2},
+    // ── Other Vascular ──
+    {id:'r58', label:'Sickle Cell Retinopathy – stages and management (laser, surgery)', tier:2},
+    {id:'r59', label:'Cystoid Macular Edema (CME) – etiologies and treatment', tier:3},
+    {id:'r60', label:'Coats Disease – clinical features and management', tier:2},
+    {id:'r61', label:'Macular Telangiectasia Type 2 (MacTel 2)', tier:2},
+    {id:'r62', label:'Von Hippel–Lindau (retinal hemangioblastoma)', tier:2},
+    {id:'r63', label:'Radiation Retinopathy', tier:2},
+    {id:'r64', label:'Purtscher and Purtscher-like Retinopathy', tier:2},
+    {id:'r65', label:'Valsalva Retinopathy', tier:1},
+    {id:'r66', label:'Terson Syndrome', tier:1},
+    {id:'r67', label:'Macular Telangiectasia Type 1 and 3', tier:1},
+    {id:'r68', label:'Wyburn-Mason Syndrome', tier:1},
+    // ── Retinopathy of Prematurity ──
+    {id:'r69', label:'ROP – classification (zone, stage, plus disease)', tier:3},
+    {id:'r70', label:'ROP – pathophysiology and natural course', tier:3},
+    {id:'r71', label:'ROP – screening criteria and intervals', tier:3},
+    {id:'r72', label:'ROP – treatment: laser, anti-VEGF, vitrectomy/scleral buckle', tier:3},
+    {id:'r73', label:'ROP – late sequelae (myopia, strabismus, amblyopia)', tier:2},
+    {id:'r74', label:'Medicolegal aspects of ROP', tier:1},
+    // ── Choroidal Disease ──
+    {id:'r75', label:'Central Serous Chorioretinopathy (CSCR) – diagnosis and treatment', tier:3},
+    {id:'r76', label:'Choroidal Perfusion Abnormalities – arteritic vs nonarteritic', tier:2},
+    {id:'r77', label:'Choroidal Hemangiomas (circumscribed vs diffuse)', tier:2},
+    {id:'r78', label:'Uveal Effusion Syndrome', tier:2},
+    {id:'r79', label:'Choroidal Folds – differential diagnosis', tier:2},
+    {id:'r80', label:'Age-Related Choroidal Atrophy', tier:2},
+    {id:'r81', label:'Bilateral Diffuse Uveal Melanocytic Proliferation', tier:1},
+    // ── Myopia ──
+    {id:'r82', label:'Pathologic Myopia – retinal complications (lacquer cracks, atrophy)', tier:3},
+    {id:'r83', label:'Myopic CNV – diagnosis and anti-VEGF management', tier:3},
+    {id:'r84', label:'Myopic maculoschisis and myopic macular hole', tier:2},
+    {id:'r85', label:'Prevention of pathologic myopia (atropine, orthokeratology)', tier:2},
+    // ── Inflammation ──
+    {id:'r86', label:'White Dot Syndromes (MEWDS, MFC, APMPPE, serpiginous, birdshot)', tier:2},
+    {id:'r87', label:'Sympathetic Ophthalmia', tier:2},
+    {id:'r88', label:'Intraocular Lymphoma – uveitis masquerade', tier:2},
+    {id:'r89', label:'Toxoplasmic Chorioretinitis – diagnosis and treatment', tier:3},
+    {id:'r90', label:'CMV Retinitis – diagnosis and treatment (HIV/immunocompromised)', tier:3},
+    {id:'r91', label:'Necrotizing Herpetic Retinitis – ARN and PORN', tier:3},
+    {id:'r92', label:'Endogenous Bacterial Endophthalmitis', tier:2},
+    {id:'r93', label:'Fungal Endophthalmitis (Candida, Aspergillus)', tier:2},
+    {id:'r94', label:'Syphilitic Retinochoroiditis', tier:2},
+    {id:'r95', label:'Toxocariasis – ocular presentation', tier:2},
+    {id:'r96', label:'Ocular Tuberculosis', tier:2},
+    {id:'r97', label:'Diffuse Unilateral Subacute Neuroretinitis (DUSN)', tier:1},
+    {id:'r98', label:'Viral retinitis – West Nile, Zika, Ebola, Chikungunya', tier:1},
+    // ── Hereditary Retinal Disease ──
+    {id:'r99',  label:'Retinitis Pigmentosa – diagnosis, genetics, and counseling', tier:3},
+    {id:'r100', label:'Retinal and Choroidal Dystrophies – classification', tier:3},
+    {id:'r101', label:'Stargardt Disease (ABCA4 mutation)', tier:3},
+    {id:'r102', label:'Best Vitelliform Macular Dystrophy (BEST1)', tier:2},
+    {id:'r103', label:'Congenital Color Deficiency', tier:2},
+    {id:'r104', label:'Congenital Stationary Night Blindness (CSNB)', tier:2},
+    {id:'r105', label:'Pattern Dystrophies', tier:1},
+    // ── Ch12: Hereditary (additional) ──
+    {id:'r106', label:'Choroidal Dystrophies – Gyrate Atrophy & Choroideremia', tier:2},
+    {id:'r107', label:'Inner Retinal Dystrophies – X-linked Retinoschisis', tier:2},
+    {id:'r108', label:'Diffuse Photoreceptor Dystrophies – RP variants (sector, inverse, sine pigmento)', tier:2},
+    // ── Ch13: Retinal Degenerations With Systemic Disease ──
+    {id:'r109', label:'Usher Syndrome – hearing loss + pigmentary retinopathy', tier:3},
+    {id:'r110', label:'Bardet-Biedl Syndrome – retinal features', tier:2},
+    {id:'r111', label:'Paraneoplastic & Autoimmune Retinopathies (CAR, MAR)', tier:2},
+    {id:'r112', label:'Albinism – ocular features and nystagmus', tier:2},
+    {id:'r113', label:'Mitochondrial Disorders (MELAS, Kearns-Sayre) – retinal manifestations', tier:1},
+    {id:'r114', label:'Metabolic Diseases With CNS Abnormalities (neuronal ceroid lipofuscinosis)', tier:1},
+    // ── Ch14: Drug-Induced Retinal Toxicity ──
+    {id:'r115', label:'Hydroxychloroquine/Chloroquine retinal toxicity – screening protocol', tier:3},
+    {id:'r116', label:'Drug-induced macular edema (niacin, fingolimod, taxanes)', tier:2},
+    {id:'r117', label:'Crystalline retinopathy (tamoxifen, methoxyflurane, canthaxanthin)', tier:2},
+    {id:'r118', label:'Phenothiazine retinal toxicity (thioridazine)', tier:2},
+    {id:'r119', label:'Drug-induced occlusive retinopathy/microvasculopathy', tier:2},
+    {id:'r120', label:'Drug-induced color vision or ERG abnormalities', tier:1},
+    // ── Ch15: Vitreous & Vitreoretinal Interface ──
+    {id:'r121', label:'Posterior Vitreous Detachment (PVD) – symptoms, signs, complications', tier:3},
+    {id:'r122', label:'Epiretinal Membrane (ERM) – OCT features and surgical management', tier:3},
+    {id:'r123', label:'Vitreomacular Traction (VMT) – OCT diagnosis and ocriplasmin treatment', tier:3},
+    {id:'r124', label:'Idiopathic Macular Holes – Gass staging and surgery', tier:3},
+    {id:'r125', label:'Vitreous Hemorrhage – differential diagnosis and management', tier:3},
+    {id:'r126', label:'Asteroid Hyalosis vs Synchisis Scintillans', tier:2},
+    {id:'r127', label:'Persistent Fetal Vasculature (PFV)', tier:2},
+    {id:'r128', label:'Wagner and Stickler Syndromes – vitreoretinal features', tier:2},
+    {id:'r129', label:'Familial Exudative Vitreoretinopathy (FEVR)', tier:2},
+    {id:'r130', label:'Vitreous Amyloidosis', tier:1},
+    // ── Ch16: Retinal Detachment ──
+    {id:'r131', label:'Lattice Degeneration – prevalence and RD risk', tier:3},
+    {id:'r132', label:'Retinal Breaks – classification and prophylactic treatment indications', tier:3},
+    {id:'r133', label:'Rhegmatogenous Retinal Detachment – symptoms, signs, management', tier:3},
+    {id:'r134', label:'Tractional Retinal Detachment – etiology and surgical management', tier:3},
+    {id:'r135', label:'Exudative (Secondary) Retinal Detachment – differential diagnosis', tier:3},
+    {id:'r136', label:'Retinoschisis vs Retinal Detachment – differentiation', tier:3},
+    {id:'r137', label:'Optic Pit Maculopathy', tier:2},
+    {id:'r138', label:'Vitreoretinal Tufts, Meridional Folds, Enclosed Ora Bays', tier:1},
+    // ── Ch17: Posterior Segment Trauma ──
+    {id:'r139', label:'Commotio Retinae (Berlin edema)', tier:3},
+    {id:'r140', label:'Choroidal Rupture', tier:2},
+    {id:'r141', label:'Open-Globe Injuries – classification (BETT) and surgical management', tier:3},
+    {id:'r142', label:'Intraocular Foreign Bodies (IOFB) – workup and removal', tier:3},
+    {id:'r143', label:'Posttraumatic Endophthalmitis', tier:3},
+    {id:'r144', label:'Posttraumatic Macular Hole', tier:2},
+    {id:'r145', label:'Solar Retinopathy and Photic Damage', tier:2},
+    {id:'r146', label:'Abusive Head Trauma – retinal hemorrhages', tier:2},
+    {id:'r147', label:'Prognostication of Globe Injuries', tier:2},
+    // ── Ch18: Laser & Cryotherapy ──
+    {id:'r148', label:'Laser Photocoagulation – principles, wavelength choice, parameters', tier:3},
+    {id:'r149', label:'Complications of Photocoagulation', tier:3},
+    {id:'r150', label:'Photodynamic Therapy (PDT) – indications and technique', tier:2},
+    {id:'r151', label:'Cryotherapy/Cryopexy – indications and technique', tier:2},
+    {id:'r152', label:'Transpupillary Thermotherapy (TTT)', tier:1},
+    // ── Ch19: Vitreoretinal Surgery & Intravitreal Injections ──
+    {id:'r153', label:'Pars Plana Vitrectomy (PPV) – technique and indications', tier:3},
+    {id:'r154', label:'ERM surgery – ILM and membrane peeling technique', tier:3},
+    {id:'r155', label:'Macular Hole surgery – ILM peel, gas tamponade, face-down positioning', tier:3},
+    {id:'r156', label:'RD repair – Scleral Buckle, PPV, Pneumatic Retinopexy (indications/outcomes)', tier:3},
+    {id:'r157', label:'Intravitreal Injections – technique, asepsis, and complications', tier:3},
+    {id:'r158', label:'Vitrectomy for DR complications (TRD, non-clearing VH, DME)', tier:3},
+    {id:'r159', label:'Retained Lens Fragments after Phacoemulsification – management', tier:3},
+    {id:'r160', label:'Posteriorly Dislocated IOL – management', tier:2},
+    {id:'r161', label:'Complications of PPV (iatrogenic breaks, cataract, EMP)', tier:2},
+    {id:'r162', label:'Submacular Hemorrhage – management options', tier:2},
+    {id:'r163', label:'Suprachoroidal Hemorrhage – prevention and management', tier:2},
+    // ── Ch20: Gene Therapy ──
+    {id:'r164', label:'Gene Augmentation Therapy – Voretigene neparvovec (RPE65)', tier:3},
+    {id:'r165', label:'Optogenetics and Genome Editing – current status and limitations', tier:2}
+  ]},
   {id:'glaucoma',  name:'Glaucoma',              subtitle:'Stone Fortress',     locked:true, topics:[]},
   {id:'neuro',     name:'Neuro-ophthalmology',   subtitle:"Wizard's Library",   locked:true, topics:[]},
   {id:'uveitis',   name:'Uveitis',               subtitle:'Alchemist Quarter',  locked:true, topics:[]},
@@ -195,6 +384,7 @@ const DISTRICTS_DEF = [
   {id:'optics',    name:'Optics & Refraction',   subtitle:'The Observatory',    locked:true, topics:[]}
 ];
 
+// Map region layout (1000x660 viewbox)
 const REGIONS = [
   {id:'optics',    pts:'10,10 335,10 310,195 160,215 10,195',              cx:172, cy:108, sm:false},
   {id:'neuro',     pts:'335,10 660,10 635,205 452,228 310,195',            cx:490, cy:112, sm:false},
@@ -209,7 +399,7 @@ const REGIONS = [
 const TIER_LABELS = {3:'⭐⭐⭐ Must Know', 2:'⭐⭐ Good to Know', 1:'⭐ Low Yield'};
 const TIER_STARS  = {3:'⭐⭐⭐', 2:'⭐⭐', 1:'⭐'};
 
-// ── STATE ─────────────────────────────────────────────────────
+// ── STATE ────────────────────────────────────────────────
 let state = {checked:{}, planned:{}, topics:{}};
 let editMode = false, currentDistrict = null, editingTopicId = null;
 
@@ -284,6 +474,7 @@ function miniIcon(cx, cy, tier, s){
     <line x1="${cx-42*s}" y1="${cy-20*s}" x2="${cx-42*s}" y2="${cy-42*s}" stroke="#5a3a20" stroke-width="${1.5*s}"/>
     <polygon class="flag" points="${cx-42*s},${cy-42*s} ${cx-27*s},${cy-35*s} ${cx-42*s},${cy-28*s}" fill="#aa1111"/>`;
 
+  // tier 100
   return `
     <circle cx="${cx}" cy="${cy-8*s}" r="${68*s}" fill="rgba(255,213,79,.07)" class="glow-aura"/>
     <rect x="${cx-57*s}" y="${cy-18*s}" width="${21*s}" height="${52*s}" fill="#9a909a"/>
@@ -308,11 +499,13 @@ function miniIcon(cx, cy, tier, s){
     <circle cx="${cx}" cy="${cy-102*s}" r="${2.5*s}" fill="#fff" opacity=".9"/>`;
 }
 
+// ── TERRAIN COLOR ───────────────────────────────────────────
 function terrainColor(tier){
   return ['#1c1008','#281805','#232020','#1c2815','#182010'][
     tier===100?4:tier===75?3:tier===50?2:tier===25?1:0];
 }
 
+// ── RENDER MAP ────────────────────────────────────────────
 function renderMap(){
   const overall = calcOverall();
   document.getElementById('overall-pct').textContent = overall+'%';
@@ -323,6 +516,7 @@ function renderMap(){
   ${REGIONS.map(r=>`<clipPath id="cp-${r.id}"><polygon points="${r.pts}"/></clipPath>`).join('')}
   <filter id="gf"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
 </defs>
+<!-- Ocean -->
 <rect width="1000" height="660" fill="#0c1520"/>
 <line x1="0" y1="30" x2="1000" y2="30" stroke="rgba(100,150,200,.04)" stroke-width="1"/>
 <line x1="0" y1="80" x2="1000" y2="80" stroke="rgba(100,150,200,.03)" stroke-width="1"/>
@@ -330,6 +524,7 @@ function renderMap(){
 <line x1="0" y1="580" x2="1000" y2="580" stroke="rgba(100,150,200,.03)" stroke-width="1"/>
 <line x1="0" y1="630" x2="1000" y2="630" stroke="rgba(100,150,200,.04)" stroke-width="1"/>`;
 
+  // ── Render each territory ──
   REGIONS.forEach(r=>{
     const d   = DISTRICTS_DEF.find(x=>x.id===r.id);
     const lck = d.locked;
@@ -337,14 +532,17 @@ function renderMap(){
     const tr  = getTier(pct);
     const sc  = r.sm ? 0.62 : (r.id==='cornea' ? 1.05 : 0.78);
 
+    // Terrain fill
     svg += `<g clip-path="url(#cp-${r.id})">`;
     svg += `<polygon points="${r.pts}" fill="${lck ? '#364858' : terrainColor(tr)}"/>`;
 
     if(lck){
+      // Fog
       svg += `<polygon points="${r.pts}" fill="rgba(70,100,130,.52)"/>`;
       svg += `<rect class="fog-a" x="-80" y="${r.cy-55}" width="1160" height="75" rx="37" fill="rgba(155,180,210,.13)"/>`;
       svg += `<rect class="fog-b" x="-80" y="${r.cy-10}" width="1160" height="55" rx="27" fill="rgba(140,168,200,.1)"/>`;
     } else {
+      // Terrain scatter + buildings
       if(tr===0){
         svg += `<ellipse cx="${r.cx-35}" cy="${r.cy+18}" rx="14" ry="6" fill="#160c04" opacity=".7"/>`;
         svg += `<ellipse cx="${r.cx+30}" cy="${r.cy+22}" rx="10" ry="5" fill="#160c04" opacity=".6"/>`;
@@ -358,12 +556,15 @@ function renderMap(){
     }
     svg += `</g>`;
 
+    // Border
     const bc = lck ? '#1e2d3a' : (tr===100 ? '#ffd54f' : '#6a4a10');
     const bw = lck ? 1 : (tr===100 ? 2.5 : 1.5);
     svg += `<polygon points="${r.pts}" fill="none" stroke="${bc}" stroke-width="${bw}" opacity="${lck?0.55:0.9}"/>`;
 
+    // Click overlay
     if(!lck) svg += `<polygon points="${r.pts}" class="region-hover" onclick="openPanel('${r.id}')"/>`;
 
+    // Labels
     const fs  = r.sm ? 10 : 12;
     const lby = r.cy + (lck ? 28 : 26);
     const tc  = lck ? 'rgba(160,190,215,.55)' : '#c9a227';
@@ -382,6 +583,7 @@ function renderMap(){
     }
   });
 
+  // Compass rose
   const cx=950, cy=625;
   svg += `
 <circle cx="${cx}" cy="${cy}" r="22" fill="rgba(0,0,0,.45)" stroke="rgba(201,162,39,.28)" stroke-width="1"/>
@@ -395,6 +597,7 @@ function renderMap(){
   document.getElementById('map-container').innerHTML = svg;
 }
 
+// ── PANEL ───────────────────────────────────────────────────
 function openPanel(id){
   const d=DISTRICTS_DEF.find(x=>x.id===id);
   if(!d||d.locked) return;
@@ -438,6 +641,7 @@ function renderPanel(){
   body.innerHTML=html;
 }
 
+// ── TOPIC ACTIONS ─────────────────────────────────────────────
 function toggleTopic(id){
   if(editMode) return;
   state.checked[id]=!state.checked[id]; saveState(); renderPanel(); renderMap();
@@ -471,6 +675,7 @@ function addTopic(){
   saveState(); inp.value=''; renderPanel(); renderMap(); showNotification('Topic added!');
 }
 
+// ── EDIT MODE / RESET ───────────────────────────────────────────
 function toggleEditMode(){
   editMode=!editMode;
   const btn=document.getElementById('edit-mode-btn');
@@ -485,6 +690,7 @@ function confirmReset(){
   showNotification('Kingdom reset. Begin anew, scholar.');
 }
 
+// ── NOTIFICATION ────────────────────────────────────────────
 let notifTimer=null;
 function showNotification(msg){
   const el=document.getElementById('notification');
