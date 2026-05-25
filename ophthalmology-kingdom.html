@@ -406,7 +406,7 @@ let editMode = false, currentDistrict = null, editingTopicId = null;
 function loadState(){
   try { const s=localStorage.getItem('ophthoKingdom'); if(s) state=JSON.parse(s); } catch(e){}
   if(!state.planned) state.planned={};
-  DISTRICTS_DEF.forEach(d=>{ if(!state.topics[d.id]) state.topics[d.id]=d.topics.map(t=>({...t})); });
+  DISTRICTS_DEF.forEach(d=>{ if(!state.topics[d.id] || (state.topics[d.id].length===0 && d.topics.length>0)) state.topics[d.id]=d.topics.map(t=>({...t})); });
 }
 function saveState(){ localStorage.setItem('ophthoKingdom', JSON.stringify(state)); }
 function getTopics(id){ return state.topics[id]||[]; }
@@ -499,7 +499,7 @@ function miniIcon(cx, cy, tier, s){
     <circle cx="${cx}" cy="${cy-102*s}" r="${2.5*s}" fill="#fff" opacity=".9"/>`;
 }
 
-// ── TERRAIN COLOR ───────────────────────────────────────────
+// ── TERRAIN COLOR ───────────────────────────────────────────────
 function terrainColor(tier){
   return ['#1c1008','#281805','#232020','#1c2815','#182010'][
     tier===100?4:tier===75?3:tier===50?2:tier===25?1:0];
@@ -597,7 +597,7 @@ function renderMap(){
   document.getElementById('map-container').innerHTML = svg;
 }
 
-// ── PANEL ───────────────────────────────────────────────────
+// ── PANEL ─────────────────────────────────────────────────────
 function openPanel(id){
   const d=DISTRICTS_DEF.find(x=>x.id===id);
   if(!d||d.locked) return;
@@ -641,7 +641,7 @@ function renderPanel(){
   body.innerHTML=html;
 }
 
-// ── TOPIC ACTIONS ─────────────────────────────────────────────
+// ── TOPIC ACTIONS ───────────────────────────────────────────────
 function toggleTopic(id){
   if(editMode) return;
   state.checked[id]=!state.checked[id]; saveState(); renderPanel(); renderMap();
@@ -675,7 +675,7 @@ function addTopic(){
   saveState(); inp.value=''; renderPanel(); renderMap(); showNotification('Topic added!');
 }
 
-// ── EDIT MODE / RESET ───────────────────────────────────────────
+// ── EDIT MODE / RESET ───────────────────────────────────────────────
 function toggleEditMode(){
   editMode=!editMode;
   const btn=document.getElementById('edit-mode-btn');
@@ -690,7 +690,7 @@ function confirmReset(){
   showNotification('Kingdom reset. Begin anew, scholar.');
 }
 
-// ── NOTIFICATION ────────────────────────────────────────────
+// ── NOTIFICATION ──────────────────────────────────────────────────
 let notifTimer=null;
 function showNotification(msg){
   const el=document.getElementById('notification');
