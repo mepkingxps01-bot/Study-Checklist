@@ -406,7 +406,7 @@ let editMode = false, currentDistrict = null, editingTopicId = null;
 function loadState(){
   try { const s=localStorage.getItem('ophthoKingdom'); if(s) state=JSON.parse(s); } catch(e){}
   if(!state.planned) state.planned={};
-  DISTRICTS_DEF.forEach(d=>{ if(!state.topics[d.id]) state.topics[d.id]=d.topics.map(t=>({...t})); });
+  DISTRICTS_DEF.forEach(d=>{ if(!state.topics[d.id] || (state.topics[d.id].length===0 && d.topics.length>0)) state.topics[d.id]=d.topics.map(t=>({...t})); });
 }
 function saveState(){ localStorage.setItem('ophthoKingdom', JSON.stringify(state)); }
 function getTopics(id){ return state.topics[id]||[]; }
