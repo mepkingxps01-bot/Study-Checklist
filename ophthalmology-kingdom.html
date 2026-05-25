@@ -61,6 +61,11 @@ header .subtitle{font-style:italic;color:var(--dark-parchment);font-size:1rem;ma
 .topic-label{font-size:.95rem;color:var(--parchment);flex:1;line-height:1.3}
 .topic-item.checked .topic-label{text-decoration:line-through;opacity:.5}
 .topic-stars{font-size:.75rem;flex-shrink:0}
+.topic-plan-cb{width:18px;height:18px;flex-shrink:0;border:1.5px solid rgba(100,160,255,.35);border-radius:3px;background:transparent;display:flex;align-items:center;justify-content:center;transition:all .15s;cursor:pointer;font-size:11px;color:transparent;user-select:none}
+.topic-plan-cb:hover{border-color:rgba(100,160,255,.7);background:rgba(100,160,255,.1)}
+.topic-item.planned .topic-plan-cb{background:rgba(80,140,255,.22);border-color:#6fa3ef;color:#6fa3ef}
+.topic-item.planned{background:rgba(80,130,255,.07);border-left:3px solid rgba(100,160,255,.45);padding-left:.3rem}
+.topic-item.planned:hover{background:rgba(80,130,255,.12)}
 .topic-edit-controls{display:none;gap:.3rem}
 .edit-mode .topic-edit-controls{display:flex}
 .edit-mode .topic-item{cursor:default}
@@ -190,7 +195,6 @@ const DISTRICTS_DEF = [
   {id:'optics',    name:'Optics & Refraction',   subtitle:'The Observatory',    locked:true, topics:[]}
 ];
 
-// Map region layout (1000x660 viewbox)
 const REGIONS = [
   {id:'optics',    pts:'10,10 335,10 310,195 160,215 10,195',              cx:172, cy:108, sm:false},
   {id:'neuro',     pts:'335,10 660,10 635,205 452,228 310,195',            cx:490, cy:112, sm:false},
@@ -206,11 +210,12 @@ const TIER_LABELS = {3:'⭐⭐⭐ Must Know', 2:'⭐⭐ Good to Know', 1:'⭐ Lo
 const TIER_STARS  = {3:'⭐⭐⭐', 2:'⭐⭐', 1:'⭐'};
 
 // ── STATE ─────────────────────────────────────────────────────
-let state = {checked:{}, topics:{}};
+let state = {checked:{}, planned:{}, topics:{}};
 let editMode = false, currentDistrict = null, editingTopicId = null;
 
 function loadState(){
   try { const s=localStorage.getItem('ophthoKingdom'); if(s) state=JSON.parse(s); } catch(e){}
+  if(!state.planned) state.planned={};
   DISTRICTS_DEF.forEach(d=>{ if(!state.topics[d.id]) state.topics[d.id]=d.topics.map(t=>({...t})); });
 }
 function saveState(){ localStorage.setItem('ophthoKingdom', JSON.stringify(state)); }
@@ -279,7 +284,6 @@ function miniIcon(cx, cy, tier, s){
     <line x1="${cx-42*s}" y1="${cy-20*s}" x2="${cx-42*s}" y2="${cy-42*s}" stroke="#5a3a20" stroke-width="${1.5*s}"/>
     <polygon class="flag" points="${cx-42*s},${cy-42*s} ${cx-27*s},${cy-35*s} ${cx-42*s},${cy-28*s}" fill="#aa1111"/>`;
 
-  // tier 100
   return `
     <circle cx="${cx}" cy="${cy-8*s}" r="${68*s}" fill="rgba(255,213,79,.07)" class="glow-aura"/>
     <rect x="${cx-57*s}" y="${cy-18*s}" width="${21*s}" height="${52*s}" fill="#9a909a"/>
@@ -304,13 +308,11 @@ function miniIcon(cx, cy, tier, s){
     <circle cx="${cx}" cy="${cy-102*s}" r="${2.5*s}" fill="#fff" opacity=".9"/>`;
 }
 
-// ── TERRAIN COLOR ─────────────────────────────────────────────
 function terrainColor(tier){
   return ['#1c1008','#281805','#232020','#1c2815','#182010'][
     tier===100?4:tier===75?3:tier===50?2:tier===25?1:0];
 }
 
-// ── RENDER MAP ────────────────────────────────────────────────
 function renderMap(){
   const overall = calcOverall();
   document.getElementById('overall-pct').textContent = overall+'%';
@@ -321,7 +323,6 @@ function renderMap(){
   ${REGIONS.map(r=>`<clipPath id="cp-${r.id}"><polygon points="${r.pts}"/></clipPath>`).join('')}
   <filter id="gf"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
 </defs>
-<!-- Ocean -->
 <rect width="1000" height="660" fill="#0c1520"/>
 <line x1="0" y1="30" x2="1000" y2="30" stroke="rgba(100,150,200,.04)" stroke-width="1"/>
 <line x1="0" y1="80" x2="1000" y2="80" stroke="rgba(100,150,200,.03)" stroke-width="1"/>
@@ -329,7 +330,6 @@ function renderMap(){
 <line x1="0" y1="580" x2="1000" y2="580" stroke="rgba(100,150,200,.03)" stroke-width="1"/>
 <line x1="0" y1="630" x2="1000" y2="630" stroke="rgba(100,150,200,.04)" stroke-width="1"/>`;
 
-  // ── Render each territory ──
   REGIONS.forEach(r=>{
     const d   = DISTRICTS_DEF.find(x=>x.id===r.id);
     const lck = d.locked;
@@ -337,17 +337,14 @@ function renderMap(){
     const tr  = getTier(pct);
     const sc  = r.sm ? 0.62 : (r.id==='cornea' ? 1.05 : 0.78);
 
-    // Terrain fill
     svg += `<g clip-path="url(#cp-${r.id})">`;
     svg += `<polygon points="${r.pts}" fill="${lck ? '#364858' : terrainColor(tr)}"/>`;
 
     if(lck){
-      // Fog
       svg += `<polygon points="${r.pts}" fill="rgba(70,100,130,.52)"/>`;
       svg += `<rect class="fog-a" x="-80" y="${r.cy-55}" width="1160" height="75" rx="37" fill="rgba(155,180,210,.13)"/>`;
       svg += `<rect class="fog-b" x="-80" y="${r.cy-10}" width="1160" height="55" rx="27" fill="rgba(140,168,200,.1)"/>`;
     } else {
-      // Terrain scatter + buildings
       if(tr===0){
         svg += `<ellipse cx="${r.cx-35}" cy="${r.cy+18}" rx="14" ry="6" fill="#160c04" opacity=".7"/>`;
         svg += `<ellipse cx="${r.cx+30}" cy="${r.cy+22}" rx="10" ry="5" fill="#160c04" opacity=".6"/>`;
@@ -361,15 +358,12 @@ function renderMap(){
     }
     svg += `</g>`;
 
-    // Border
     const bc = lck ? '#1e2d3a' : (tr===100 ? '#ffd54f' : '#6a4a10');
     const bw = lck ? 1 : (tr===100 ? 2.5 : 1.5);
     svg += `<polygon points="${r.pts}" fill="none" stroke="${bc}" stroke-width="${bw}" opacity="${lck?0.55:0.9}"/>`;
 
-    // Click overlay
     if(!lck) svg += `<polygon points="${r.pts}" class="region-hover" onclick="openPanel('${r.id}')"/>`;
 
-    // Labels
     const fs  = r.sm ? 10 : 12;
     const lby = r.cy + (lck ? 28 : 26);
     const tc  = lck ? 'rgba(160,190,215,.55)' : '#c9a227';
@@ -388,7 +382,6 @@ function renderMap(){
     }
   });
 
-  // Compass rose
   const cx=950, cy=625;
   svg += `
 <circle cx="${cx}" cy="${cy}" r="22" fill="rgba(0,0,0,.45)" stroke="rgba(201,162,39,.28)" stroke-width="1"/>
@@ -402,7 +395,6 @@ function renderMap(){
   document.getElementById('map-container').innerHTML = svg;
 }
 
-// ── PANEL ─────────────────────────────────────────────────────
 function openPanel(id){
   const d=DISTRICTS_DEF.find(x=>x.id===id);
   if(!d||d.locked) return;
@@ -435,8 +427,8 @@ function renderPanel(){
       if(editingTopicId===topic.id){
         html+=`<div class="topic-edit-form"><input type="text" id="ei-${topic.id}" value="${escHtml(topic.label)}" style="flex:1" onkeydown="handleEditKey(event,'${topic.id}')"/><select id="et-${topic.id}"><option value="3"${topic.tier===3?' selected':''}>⭐⭐⭐ Must</option><option value="2"${topic.tier===2?' selected':''}>⭐⭐ Good</option><option value="1"${topic.tier===1?' selected':''}>⭐ Low</option></select><button class="btn" style="padding:.3rem .7rem;font-size:.75rem" onclick="saveTopicEdit('${topic.id}')">Save</button><button class="btn btn-danger" style="padding:.3rem .7rem;font-size:.75rem" onclick="cancelTopicEdit()">Cancel</button></div>`;
       } else {
-        const chk=!!state.checked[topic.id];
-        html+=`<div class="topic-item${chk?' checked':''}" onclick="${isEdit?'':'toggleTopic(\''+topic.id+'\')'}" ><div class="topic-checkbox">${chk?'✓':''}</div><div class="topic-label">${escHtml(topic.label)}</div><div class="topic-stars">${TIER_STARS[topic.tier]}</div><div class="topic-edit-controls"><button class="topic-edit-btn" onclick="event.stopPropagation();startEditTopic('${topic.id}')">✎</button><button class="topic-edit-btn del" onclick="event.stopPropagation();deleteTopic('${topic.id}')">✕</button></div></div>`;
+        const chk=!!state.checked[topic.id], pln=!!state.planned[topic.id];
+        html+=`<div class="topic-item${chk?' checked':''}${pln?' planned':''}" onclick="${isEdit?'':'toggleTopic(\''+topic.id+'\')'}" ><div class="topic-checkbox">${chk?'✓':''}</div><div class="topic-label">${escHtml(topic.label)}</div><div class="topic-plan-cb" title="Mark as planned" onclick="event.stopPropagation();togglePlanned('${topic.id}')">${pln?'▶':''}</div><div class="topic-stars">${TIER_STARS[topic.tier]}</div><div class="topic-edit-controls"><button class="topic-edit-btn" onclick="event.stopPropagation();startEditTopic('${topic.id}')">✎</button><button class="topic-edit-btn del" onclick="event.stopPropagation();deleteTopic('${topic.id}')">✕</button></div></div>`;
       }
     });
     html+=`</div>`;
@@ -446,7 +438,6 @@ function renderPanel(){
   body.innerHTML=html;
 }
 
-// ── TOPIC ACTIONS ─────────────────────────────────────────────
 function toggleTopic(id){
   if(editMode) return;
   state.checked[id]=!state.checked[id]; saveState(); renderPanel(); renderMap();
@@ -454,6 +445,9 @@ function toggleTopic(id){
     const pct=calcProgress(currentDistrict), tier=getTier(pct);
     if([25,50,75,100].includes(tier)&&getTier(pct-1)<tier) showNotification('🏰 '+getTierLabel(tier)+' reached!');
   }
+}
+function togglePlanned(id){
+  state.planned[id]=!state.planned[id]; saveState(); renderPanel();
 }
 function startEditTopic(id){ editingTopicId=id; renderPanel(); setTimeout(()=>{const el=document.getElementById('ei-'+id);if(el){el.focus();el.select();}},50); }
 function handleEditKey(e,id){ if(e.key==='Enter') saveTopicEdit(id); if(e.key==='Escape') cancelTopicEdit(); }
@@ -477,7 +471,6 @@ function addTopic(){
   saveState(); inp.value=''; renderPanel(); renderMap(); showNotification('Topic added!');
 }
 
-// ── EDIT MODE / RESET ─────────────────────────────────────────
 function toggleEditMode(){
   editMode=!editMode;
   const btn=document.getElementById('edit-mode-btn');
@@ -492,7 +485,6 @@ function confirmReset(){
   showNotification('Kingdom reset. Begin anew, scholar.');
 }
 
-// ── NOTIFICATION ──────────────────────────────────────────────
 let notifTimer=null;
 function showNotification(msg){
   const el=document.getElementById('notification');
